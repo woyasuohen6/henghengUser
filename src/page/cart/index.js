@@ -223,11 +223,14 @@ class Cart extends Component{
         })
         return (
           <div id="cart">
-              <ul className="serviceList">
+            {/**
+                        <ul className="serviceList">
                   <li><span>★</span>30天无忧退货</li>
                   <li><span>★</span>48小时快速退款</li>
                   <li><span>★</span>满88元免邮费</li>
               </ul>
+                */
+            }
               <div className="cartGoodsListWrap">
                   {cartList.map((item, index) => (
                   !isEdit?

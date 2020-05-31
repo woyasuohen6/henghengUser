@@ -7,7 +7,7 @@ export function* home() {
     const data = yield call(http.getHomeData,{});
     yield put({
       type: actionTypes.HOME_GETDATA_SUCCESS,
-      data
+      data: data.data
     })
   } catch (err) {
     yield put({

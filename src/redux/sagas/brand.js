@@ -11,7 +11,7 @@ export function* brandGoods(action) {
     const data = yield call(http.getBrandDetail,action.parmas);
     yield put({
       type: actionTypes.BRAND_DETAIL_GETDATA_SUCCESS,
-      brandDetail:data.brand
+      brandDetail:data.data
     })
   } catch (err) {
     yield put({

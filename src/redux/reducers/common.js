@@ -1,8 +1,8 @@
 import ActionTypes from '../actions/actionTypes';
-const user = window.localStorage.getItem('token')
+// const userId = window.sessionStorage.getItem('userId')
 const initialState = {
   isloading: false,
-  isLogin: user ? true : false,
+  isLogin: false,
   userInfo: null,
   isRegister: false
 };
@@ -30,7 +30,6 @@ function commonReducer(state = initialState, action) {
         isLogin: true,
       };
     case ActionTypes.GOTO_REGISTER_PAGE:
-      console.log(666)
       return {
         ...state,
         isRegister: true,

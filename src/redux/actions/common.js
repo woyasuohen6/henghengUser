@@ -36,4 +36,10 @@ export function gotoLogin() {
   }
 }
 
+export function verifyLogin() {
+  return {
+    type: ActionsTypes.VERIFY_LOGIN_STATUS
+  }
+}
+
 

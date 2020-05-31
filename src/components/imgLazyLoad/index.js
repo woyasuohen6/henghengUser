@@ -49,6 +49,6 @@ class ImgLazyLoad extends Component{
 }
 ImgLazyLoad.defaultProps = {
   offSetTop: 40,
-  initUrl: 'https://ss0.bdstatic.com/-0U0bnSm1A5BphGlnYG/tam-ogel/8bc5c8ca3da4043fc6c9dbfb32d5dc89_121_121.jpg'
+  initUrl: '/img/logo.png'
 }
 export default ImgLazyLoad

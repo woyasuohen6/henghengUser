@@ -9,6 +9,7 @@ import { withRouter } from 'react-router-dom'
 import delAddress from '../../static/img/del-address.png'
 import http from '../../http'
 import AddressSet from '../../components/addressSet'
+
 class Address extends Component {
   state = {
     addressList: [],
@@ -26,8 +27,8 @@ class Address extends Component {
 
   async fetchData() {
     this.props.actions.startLoading()
-    const data = await http.getAddressList()
-    this.setState({ addressList: data }, () => {
+    // const data = await http.getAddressList()
+    this.setState({ addressList: [{"id":30,"name":"任崇伟","user_id":16,"country_id":0,"province_id":23,"city_id":270,"district_id":2679,"address":"重庆邮电大学","mobile":"13186671773","is_default":0,"province_name":"重庆","city_name":"重庆市","district_name":"南岸区","full_region":"重庆重庆市南岸区"}] }, () => {
       this.props.actions.endLoading()
     })
   }
@@ -44,8 +45,6 @@ class Address extends Component {
         text: '是',
         onPress: async () => {
           this.props.actions.startLoading()
-          await http.postDelteAddress({ id })
-          this.fetchData()
         }
       }
     ])

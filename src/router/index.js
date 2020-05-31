@@ -1,6 +1,7 @@
 import AsyncComponent from '../components/AsyncComponent'
 const Home = AsyncComponent(() => import('../page/home'))
 const Topic = AsyncComponent(() => import('../page/topic'))
+const Farm = AsyncComponent(() => import('../page/farm'))
 const Catelog = AsyncComponent(() => import('../page/catelog'))
 const Cart = AsyncComponent(() => import('../page/cart'))
 const Mine = AsyncComponent(() => import('../page/mine'))
@@ -12,16 +13,19 @@ const Comment = AsyncComponent(() => import('../page/comment'))
 const TopicCommentWrite = AsyncComponent(() =>
   import('../page/topicCommentWrite')
 )
-const GoodsSearch = AsyncComponent(() => import('../page/goodsSearch'))
 const Collect = AsyncComponent(() => import('../page/collect'))
 const Address = AsyncComponent(() => import('../page/address'))
-const OrderConfirm = AsyncComponent(() => import('../page/orderConfirm'))
-const routes = [
-  {
+const routes = [{
     name: '首页',
     isTab: true,
     link: '/home',
     component: Home
+  },
+  {
+    name: '养殖场',
+    link: '/farm',
+    isTab: true,
+    component: Farm
   },
   {
     name: '专题',
@@ -84,12 +88,6 @@ const routes = [
     component: TopicCommentWrite
   },
   {
-    name: '商品查询',
-    link: '/goodsSearch',
-    isTab: false,
-    component: GoodsSearch
-  },
-  {
     name: '收藏商品',
     link: '/collect',
     isTab: false,
@@ -100,12 +98,6 @@ const routes = [
     link: '/address',
     isTab: false,
     component: Address
-  },
-  {
-    name: '订单确认',
-    link: '/orderConfirm',
-    isTab: false,
-    component: OrderConfirm
   }
 ]
 export default routes

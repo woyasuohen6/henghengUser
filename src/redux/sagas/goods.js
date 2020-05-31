@@ -22,7 +22,7 @@ export function* goodsList(action) {
     const data = yield call(http.getGoodsData,action.parmas);
     yield put({
       type: actionTypes.GOODS_LIST_GETDATA_SUCCESS,
-      goodsList: data.goodsList
+      goodsList: data.data.goodsList
     })
   } catch (err) {
     yield put({
@@ -31,9 +31,25 @@ export function* goodsList(action) {
   }
 }
 
+export function* typedGoodsList(action) {
+  try {
+    const data = yield call(http.getTypedGoodsData, action.parmas);
+    yield put({
+      type: actionTypes.TYPED_GOODS_LIST_GETDATA_SUCCESS,
+      typedGoodsList: data.data.goodsList
+    })
+  } catch (err) {
+    yield put({
+      type: actionTypes.TYPED_GOODS_LIST_GETDATA_FAILURE,
+    })
+  }
+}
+
+
 export default function* root() {
   yield all([
     takeLatest(actionTypes.GOODS_COUNT_GETDATA_REQUSET, requestBefore(sellCount)),
-    takeLatest(actionTypes.GOODS_LIST_GETDATA_REQUSET, requestBefore(goodsList))
+    takeLatest(actionTypes.GOODS_LIST_GETDATA_REQUSET, requestBefore(goodsList)),
+    takeLatest(actionTypes.TYPED_GOODS_LIST_GETDATA_REQUSET, requestBefore(typedGoodsList))
   ]);
 }

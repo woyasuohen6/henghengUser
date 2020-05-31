@@ -15,21 +15,30 @@ class BrandDetail extends Component{
   }
   componentWillMount () {
     const {match:{params:{id}},goodsAction:{fetchGoodsData}, brandAction:{fetchBrandDetail}} = this.props;
-    fetchBrandDetail({id})
-    fetchGoodsData({brandId:id,page:1,size:10000})
+    fetchBrandDetail({merchantId: id})
+    fetchGoodsData({merchantId: id})
   }
+
+  loadImg(brandDetail) {
+    if(brandDetail.img_url) {
+      return (
+        <ImgLazyLoad
+            offSetTop={44}
+            realUrl = {brandDetail.img_url}>
+        </ImgLazyLoad>
+      )
+    } 
+  }
+
   render () {
     const {brandDetail,goodsList} = this.props
     return (
       <Fragment>
         <Header clickLeft={this.goBack.bind(this)} title={brandDetail.name}></Header>
         <div className="brandDetail">
-          <ImgLazyLoad
-            offSetTop={44}
-            realUrl = {brandDetail.list_pic_url}>
-          </ImgLazyLoad>
+          {this.loadImg(brandDetail)}
           <div className="breadDesc">
-            {brandDetail.simple_desc}
+            {brandDetail.description}
           </div>
         </div>
         <div className="brandGoodsList">

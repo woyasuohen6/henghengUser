@@ -5,6 +5,8 @@ import * as topicAction from '../../redux/actions/topic'
 import LazyLoad from 'react-lazyload'
 import { Link } from 'react-router-dom'
 import ImgLazyLoad from '../../components/imgLazyLoad'
+// import { Card, WingBlank, WhiteSpace } from 'antd-mobile'
+
 import './index.css'
 class Topic extends Component {
   componentWillMount() {

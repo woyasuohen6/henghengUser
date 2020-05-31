@@ -4,20 +4,23 @@ import './index.scss'
 import ImgLazyLoad from '../../imgLazyLoad'
 class GoodsList extends Component{
   render () {
-    const { goodsList} = this.props
+    const { goodsList } = this.props
+    // let goodsList = []
+    console.log(goodsList)
     return (
         <div className="goodsList">
-          {goodsList.map((item) => {
+          {
+            goodsList.map((item) => {
             return(
-              <Link to={`/goods/${item.id}`} key={item.id} className="goodsItem">
+              <Link to={`/goods/${item._id}`} key={item._id} className="goodsItem">
                 <div className="goodsItemImg">
                   <ImgLazyLoad
                     offSetTop={44}
-                    realUrl = {item.list_pic_url}>
+                    realUrl = {item.img_url}>
                   </ImgLazyLoad>
                 </div>
                 <div className="goodsItemName">{item.name}</div>
-                <div className="goodsItemPrice">￥{item.retail_price}元</div>
+                <div className="goodsItemPrice">￥{item.price}</div>
               </Link>
             )
           })}

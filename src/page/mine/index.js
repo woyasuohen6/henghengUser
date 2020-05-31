@@ -22,42 +22,42 @@ class Mine extends Component{
         icon: 'icon-order',
         name: '我的订单'
       },
-      {
-        icon: 'icon-rili',
-        name: '周末拼单'
-      },
-      {
-        icon: 'icon-youhuiquan',
-        name: '优惠券'
-      },
-      {
-        icon: 'icon-youxuan',
-        name: '优选购'
-      },
-      {
-        icon: 'icon-hongbao',
-        name: '我的红包'
-      },
-      {
-        icon: 'icon-huiyuan',
-        name: '会员plus'
-      },
-      {
-        icon: 'icon-yaoqing',
-        name: '邀请返利'
-      },
-      {
-        icon: 'icon-yijianfankui',
-        name: '意见反馈'
-      },
-      {
-        icon: 'icon-kefu',
-        name: '客服咨询'
-      },
-      {
-        icon: 'icon-baohu',
-        name: '账户安全'
-      }
+      // {
+      //   icon: 'icon-rili',
+      //   name: '周末拼单'
+      // },
+      // {
+      //   icon: 'icon-youhuiquan',
+      //   name: '优惠券'
+      // },
+      // {
+      //   icon: 'icon-youxuan',
+      //   name: '优选购'
+      // },
+      // {
+      //   icon: 'icon-hongbao',
+      //   name: '我的红包'
+      // },
+      // {
+      //   icon: 'icon-huiyuan',
+      //   name: '会员plus'
+      // },
+      // {
+      //   icon: 'icon-yaoqing',
+      //   name: '邀请返利'
+      // },
+      // {
+      //   icon: 'icon-yijianfankui',
+      //   name: '意见反馈'
+      // },
+      // {
+      //   icon: 'icon-kefu',
+      //   name: '客服咨询'
+      // },
+      // {
+      //   icon: 'icon-baohu',
+      //   name: '账户安全'
+      // }
     ]
   }
   showPower (item) {

@@ -13,3 +13,10 @@ export function fetchGoodsData(parmas) {
     parmas
   }
 }
+
+export function fetchTypedGoodsData(parmas) {
+  return {
+    type: ActionsTypes.TYPED_GOODS_LIST_GETDATA_REQUSET,
+    parmas
+  }
+}

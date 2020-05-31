@@ -1,22 +1,22 @@
-import React, {Component} from 'react'
-import {Link, withRouter} from 'react-router-dom'
+/* eslint-disable react/jsx-no-comment-textnodes */
+import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import Header from '../../components/header'
 import './index.scss'
 import http from '../../http'
 import ImgLazyLoad from '../../components/imgLazyLoad'
 import { Carousel, Toast } from 'antd-mobile'
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as commonAction from '../../redux/actions/common';
-import { Modal } from 'antd-mobile';
-import CommentList from '../../components/common/commentList'
-import GoodsList from '../../components/common/goodsList'
-class Goods extends Component{
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import * as commonAction from '../../redux/actions/common'
+import { Modal } from 'antd-mobile'
+class Goods extends Component {
   state = {
     info: {
       goodsName: '',
       subTitle: '',
-      goods_desc: null
+      goods_desc: null,
+      imgList: [],
     },
     brand: {},
     gallery: [],
@@ -29,336 +29,302 @@ class Goods extends Component{
     goodsCount: 0,
     userHasCollect: 0,
     goodsBuyNum: 0,
-    isShowSize: false
+    isShowSize: false,
   }
-  componentDidMount() {
-    this.fetchData(this.props.match.params.id)
-    this.fetchCartNum()
-  }
+
   /*获取商品相关信息*/
-  async fetchData (id) {
-    const {actions} = this.props
+  async fetchData(id) {
+    const { actions } = this.props
     try {
       actions.startLoading()
-      const data = await http.getGoodsDetail({id})
-      const {goodsList} = await http.getGoodsRelated({id})
-      let {info, gallery, brand, comment, attribute,issue, specificationList, productList, userHasCollect} = data
-      specificationList.forEach((item) => {
-        item.activeId = item.valueList[0].id
-      })
+      const data = await http.getGoodsDetail({ commodityId: id })
+      let {
+        imgList,
+        img_url,
+        _id,
+        name,
+        price,
+        description,
+        predictTime,
+        type,
+        endTime,
+        startTime,
+        address,
+        profit,
+        merchantId,
+      } = data.data
       this.setState({
-        info:{
-          goodsName: info.name,
-          subTitle: info.goods_brief,
-          goods_desc: info.goods_desc
+        info: {
+          img_url,
+          _id,
+          name,
+          price,
+          description,
+          predictTime,
+          type,
+          endTime,
+          startTime,
+          address,
+          profit,
+          merchantId,
+          imgList,
         },
-        userHasCollect,
-        comment,
-        brand,
-        gallery,
-        attribute,
-        issue,
-        goodsList,
-        specificationList,
-        productList
       })
       actions.endLoading()
-    }catch (e) {
+    } catch (e) {
       actions.endLoading()
       throw e
     }
   }
-  /*获取购物车商品数量*/
-  async fetchCartNum () {
-    try {
-      const {errno, errmsg, cartTotal} = await http.getCartNum({})
-      if(errno===401){
-          Toast.fail(errmsg, .5,() => {
-            this.props.actions.loginFailure()
-          })
-      }else{
-        this.setState({goodsCount:cartTotal.goodsCount})
-      }
-    } catch (e) {
-        throw e
-    }
-  }
-  /*添加到我喜欢*/
-  async changeLikes () {
-    const {data:{type}} = await http.postDoLikes({typeId: 0, valueId: this.props.match.params.id})
-    this.setState({userHasCollect: type==='add'?1:0})
-  }
   /*修改购买数量*/
-  changeBuyNum (val ,stock) {
-    if(this.state.goodsBuyNum + val >= 0 && this.state.goodsBuyNum + val <= stock){
+  changeBuyNum(val,) {
+    if (
+      this.state.goodsBuyNum + val >= 0    ) {
       this.setState({
-        goodsBuyNum: this.state.goodsBuyNum + val
+        goodsBuyNum: this.state.goodsBuyNum + val,
       })
     }
   }
-  goBack () {
-    const {history:{go}} = this.props
+
+  goBack() {
+    const {
+      history: { go },
+    } = this.props
     go(-1)
   }
-  /*是否显示规格属性*/
+
   changeIsShowSize () {
     this.setState({
       isShowSize: !this.state.isShowSize
     })
   }
-  componentWillReceiveProps(newP){
-    if(this.props.match.params.id!==newP.match.params.id){
-        this.fetchData(newP.match.params.id)
-    }
-  }
-  /*选择某个规格属性*/
-  changeSizeActiveId (index, item) {
-    const {specificationList, productList ,goodsBuyNum} = this.state
-    if(specificationList[index].activeId!==item.id){
-      specificationList[index].activeId = item.id
-      const {stock} = this.computedGoodsSizePriceAndSizeName(specificationList, productList)
-      this.setState({
-        specificationList,
-        goodsBuyNum: goodsBuyNum>stock?stock:goodsBuyNum
-      })
-    }
-  }
+
   /*添加到购物车*/
-  async addCart (priceId, goodsBuyNum, isShowSize){
-    if(!isShowSize){
-      this.setState({isShowSize: true})
+  async addCart(priceId, goodsBuyNum, isShowSize) {
+    if (!isShowSize) {
+      this.setState({ isShowSize: true })
       return null
     }
-    if(goodsBuyNum<1){
-      Toast.fail('请选择商品数量',1)
-      return null
-    }
-    const {errno, errmsg} = await http.postAddCart({goodsId: this.props.match.params.id, number: goodsBuyNum, productId:priceId})
-    if(errno === 0){
-        Toast.success('添加成功！',.5, () =>{
-            this.fetchCartNum()
-        })
-    }else{
-      Toast.fail(errmsg, .5,() => {
-        if(errno === 401){
-          this.props.actions.loginFailure()
-        }
-      })
-    }
+    console.log(this.state)
+    // if (goodsBuyNum < 1) {
+    //   Toast.fail('请选择商品数量', 1)
+    //   return null
+    // }
+    // const { errno, errmsg } = await http.postAddCart({
+    //   goodsId: this.props.match.params.id,
+    //   number: goodsBuyNum,
+    //   productId: priceId,
+    // })
+    // if (errno === 0) {
+    //   Toast.success('添加成功！', 0.5, () => {
+    //     this.fetchCartNum()
+    //   })
+    // } else {
+    //   Toast.fail(errmsg, 0.5, () => {
+    //     if (errno === 401) {
+    //       this.props.actions.loginFailure()
+    //     }
+    //   })
+    // }
   }
   /*支付订单*/
-  payGoods () {
+  payGoods() {
     Toast.loading('下单功能还未GET,耐心等待~', 1)
   }
-  /**
-   *
-   * @param sizeList
-   * @param priceList
-   * @returns {{hasChooseSizeName: string, price: number, stock: number, priceId: *}}
-   */
-  computedGoodsSizePriceAndSizeName(sizeList, priceList){
-    let hasChooseSize = []
-    let sizePriceIndex = []
-    let price = 0
-    let stock = 0
-    let priceId = null
-    sizeList.forEach((item) => {
-      item.valueList.forEach((temp) => {
-        if(item.activeId === temp.id){
-          sizePriceIndex.push(temp.id)
-          hasChooseSize.push(temp.value)
-        }
-      })
-    })
-    priceList.forEach((item) => {
-      if(item.goods_specification_ids === sizePriceIndex.join('_')){
-        price = item.retail_price
-        stock = item.goods_number
-        priceId = item.id
-      }
-    })
-    return {
-      hasChooseSizeName: hasChooseSize.join('、'),
-      price,
-      stock,
-      priceId
-    }
+  componentDidMount() {
+    this.fetchData(this.props.match.params.id)
   }
-  render () {
-    const {info:{goodsName, subTitle, goods_desc},
-      brand ,gallery, isShowSize, comment, attribute, goodsCount, userHasCollect, goodsBuyNum,
-      issue, goodsList, specificationList, productList} = this.state
-    const {hasChooseSizeName, price, stock,priceId  } = this.computedGoodsSizePriceAndSizeName(specificationList, productList)
-    const {history:{push}, isloading} = this.props
-    return (
-        !isloading?(
-            <div className="goodsPage">
-              <Modal
-                  popup
-                  visible={isShowSize}
-                  onClose={this.changeIsShowSize.bind(this)}
-                  animationType="slide-up"
-              >
-                <div className="goodsSizeDo">
-                  <div className="goodsSizeSetMsg">
-                    {gallery.length? <img src={gallery[0].img_url} alt="goods"/>:null}
-                    <div className="gooodsSizePriceAndSize">
-                      <div>单价: <span>￥{price}</span></div>
-                      <div>库存: <span>{stock}件</span></div>
-                      <div>已选择:
-                        <br/>{hasChooseSizeName}</div>
-                    </div>
-                    <div className="closeModel" onClick={this.changeIsShowSize.bind(this)}>
-                      <i className="iconfont icon-cc-close-square"></i>
-                    </div>
-                  </div>
-                  <div className="goodsSizeWrap">
-                    {
-                      specificationList.map((item, index) => ((
-                        <div className="goodsSizeItem" key={item.specification_id}>
-                          <div className="goodsSizeItemName">{item.name}</div>
-                          <div className="goodsSizeListWrap">
-                            {
-                              item.valueList.map(temp => (
-                                  <div className={item.activeId === temp.id?'goodsSizeListItem active':'goodsSizeListItem'}
-                                       onClick={this.changeSizeActiveId.bind(this, index, temp, stock)} key={temp.id}>{temp.value}
-                                  </div>
-                              ))
-                            }
-                          </div>
-                        </div>
-                        )))
-                    }
-                    <div className="goodsSizeItem">
-                      <div className="goodsSizeItemName">数量</div>
-                      {
-                        stock>0?(
-                            <div className="goodsSizeListWrap">
-                              <div className="goodsBuyCount">
-                                <div className="onePx_border" onClick={this.changeBuyNum.bind(this, -1, stock)}>-</div>
-                                <div className="onePx_border">{goodsBuyNum}</div>
-                                <div className="onePx_border" onClick={this.changeBuyNum.bind(this,1, stock)}>+</div>
-                              </div>
-                            </div>
-                        ):(
-                            <div className="goodsSizeListWrap">已售馨!</div>
-                        )
-                      }
-                    </div>
-                  </div>
-                </div>
-                <div className="goodsDoWrap">
-                  <div onClick={this.addCart.bind(this,priceId,goodsBuyNum, isShowSize)}>加入购物车</div>
-                  <div  onClick={this.payGoods.bind(this)}>立即下单</div>
-                </div>
-              </Modal>
-              <Header clickLeft={this.goBack.bind(this)} title={goodsName}></Header>
-              <Carousel autoplay infinite>
-                {gallery.map(item => (
-                    <div className="goodsBannerItem" key={item.id}>
-                      <ImgLazyLoad
-                          offSetTop={0}
-                          realUrl = {item.img_url}>
-                      </ImgLazyLoad>
-                    </div>
-                ))}
-              </Carousel>
-              <ul className="serviceList">
-                <li><span>★</span>30天无忧退货</li>
-                <li><span>★</span>48小时快速退款</li>
-                <li><span>★</span>满88元免邮费</li>
-              </ul>
-              <div className="goodsMsgWrap">
-                <div className="goodsNameTitle">{goodsName}</div>
-                <div className="goodsNameSubTitle">{subTitle}</div>
-                <div className="goodsPriceTitle">￥{price}</div>
-                {
-                  'name' in brand?(
-                      <div className="goodsBrandTitle" onClick={() => {push(`/brandDetail/${brand.id}`)}}>
-                        <div>{brand.name}</div>
-                      </div>
-                  ): null
-                }
-              </div>
-              <div className="goodsSize" onClick={this.changeIsShowSize.bind(this)}>
-                <div>{hasChooseSizeName}</div>
-                <div>x {goodsBuyNum}</div>
-                <div>
-                  选择规格<i className="iconfont icon-right"></i>
-                </div>
-              </div>
-              {comment.count?<div className="goodsComment">
-                    <div className="goodsCommentTitle">
-                      <div>评论 ({comment.count})</div>
-                      <div>
-                        <Link to={`/comment/${this.props.match.params.id}?typeId=0`} >
-                          查看全部<i className="iconfont icon-right"></i>
-                        </Link>
-                      </div>
-                    </div>
-                    {
-                      'data' in comment? <CommentList commentList ={[comment.data]}></CommentList>:null
-                    }
-                  </div> :null}
-              <div className="goodsAttribute">
-                <div className="goodsAttributeLine">
-                  商品参数
-                </div>
-                <div className="goodsAttributeList">
-                  {
-                    attribute.map((item) => (
-                        <div className="goodsAttributeItem" key={item.name}>
-                          <div className="attributeLabel">{item.name}</div>
-                          <div className="attributeContent">{item.value}</div>
-                        </div>
-                    ))
-                  }
-                </div>
-              </div>
-              <div  dangerouslySetInnerHTML={{__html:goods_desc}} className="topicDetailImg"></div>
-              <div className="goodsAttribute">
-                <div className="goodsAttributeLine">
-                  常见问题
-                </div>
-                {
-                  issue.map((item) => (
-                      <div className="problemWrap" key={item.id}>
-                        <div className="problemLabel">
-                          <span>√</span>{item.question}
-                        </div>
-                        <div className="problemContent">
-                          {item.answer}
-                        </div>
-                      </div>
+  render() {
+    const {
+      info: {
+        img_url,
+        _id,
+        name,
+        price,
+        description,
+        predictTime,
+        type,
+        endTime,
+        startTime,
+        address,
+        profit,
+        merchantId,
+        imgList,
+      },
 
-                  ))
-                }
-              </div>
-              <div className="goodsAttribute">
-                <div className="goodsAttributeLine">
-                  大家都在看
+      isShowSize,
+      goodsBuyNum,
+      specificationList,
+    } = this.state
+    const {
+      history: { push },
+      isloading,
+    } = this.props
+    return !isloading ? (
+      <div className="goodsPage">
+        <Modal
+          popup
+          visible={isShowSize}
+          animationType="slide-up"
+        >
+          <div className="goodsSizeDo">
+            <div className="goodsSizeSetMsg">
+              <img src={img_url} alt="goods" />
+              <div className="gooodsSizePriceAndSize">
+                <div>
+                  单价: <span>￥{price}</span>
+                </div>
+                <div>
+                  库存: <span>999</span>
                 </div>
               </div>
-              <div className="goodsList">
-                <GoodsList goodsList={goodsList}></GoodsList>
-              </div>
-              <div className="goodsPageDo">
-                <div className={userHasCollect===1?'isLike like': 'isLike'} onClick={this.changeLikes.bind(this)}>
-                  {userHasCollect===1?'★': '☆'}
-                </div>
-                <div className="cartNum" onClick={() => {push(`/cart`)}}>
-                  <i className="iconfont icon-Add-Cart">
-                    <span>{goodsCount}</span>
-                  </i>
-                </div>
-                <div className="addCart" onClick={this.addCart.bind(this,priceId, goodsBuyNum, isShowSize)}>加入购物车</div>
-                <div className="payGoods" onClick={this.payGoods.bind(this)}>立即购买</div>
+              <div
+                className="closeModel"
+                onClick={this.changeIsShowSize.bind(this)}
+              >
+                <i className="iconfont icon-cc-close-square"></i>
               </div>
             </div>
-            ):null
-    )
+            <div className="goodsSizeWrap">
+              {specificationList.map((item, index) => (
+                <div className="goodsSizeItem" key={item.specification_id}>
+                  <div className="goodsSizeItemName">{item.name}</div>
+                  <div className="goodsSizeListWrap">
+                    {item.valueList.map(temp => (
+                      <div
+                        className={
+                          item.activeId === temp.id
+                            ? 'goodsSizeListItem active'
+                            : 'goodsSizeListItem'
+                        }
+                        key={temp.id}
+                      >
+                        {temp.value}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <div className="goodsSizeItem">
+                <div className="goodsSizeItemName">数量</div>
+                <div className="goodsSizeListWrap">
+                  <div className="goodsBuyCount">
+                    <div
+                      className="onePx_border"
+                      onClick={this.changeBuyNum.bind(this, -1)}
+                    >
+                      -
+                    </div>
+                    <div className="onePx_border">{goodsBuyNum}</div>
+                    <div
+                      className="onePx_border"
+                      onClick={this.changeBuyNum.bind(this, 1)}
+                    >
+                      +
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="goodsDoWrap">
+            <div>加入购物车</div>
+            <div onClick={this.payGoods.bind(this)}>立即养殖</div>
+          </div>
+        </Modal>
+        <Header clickLeft={this.goBack.bind(this)} title={name}></Header>
+        <Carousel autoplay infinite>
+          {imgList.map((item, index) => (
+            <div className="goodsBannerItem" key={index}>
+              <ImgLazyLoad offSetTop={0} realUrl={item}></ImgLazyLoad>
+            </div>
+          ))}
+        </Carousel>
+        <ul className="serviceList">
+          <li>
+            <span>★</span>养殖全程看护
+          </li>
+          <li>
+            <span>★</span>风险规避
+          </li>
+          <li>
+            <span>★</span>配送包邮
+          </li>
+        </ul>
+        <div className="goodsMsgWrap">
+          <div className="goodsNameTitle">{name}</div>
+          <div className="goodsPriceTitle">{price}</div>
+          <div
+            className="goodsBrandTitle"
+            onClick={() => {
+              push(`/brandDetail/${merchantId}`)
+            }}
+          >
+            <div>{address}</div>
+          </div>
+        </div>
+        <div className="goodsAttribute">
+          <div className="goodsAttributeLine">养殖参数</div>
+          <div className="goodsAttributeList">
+            <div className="goodsAttributeItem">
+              <div className="attributeLabel">介绍信息</div>
+              <div className="attributeContent">{description}</div>
+            </div>
+            <div className="goodsAttributeItem">
+              <div className="attributeLabel">生长周期</div>
+              <div className="attributeContent">
+                {predictTime + '天'}
+              </div>
+            </div>
+            <div className="goodsAttributeItem">
+              <div className="attributeLabel">播种时间</div>
+              <div className="attributeContent">
+                {new Date(startTime).toString()}
+              </div>
+            </div>
+            <div className="goodsAttributeItem">
+              <div className="attributeLabel">成熟时间</div>
+              <div className="attributeContent">
+                {new Date(endTime).toString()}
+              </div>
+            </div>
+            <div className="goodsAttributeItem">
+              <div className="attributeLabel">预计收益</div>
+              <div className="attributeContent">{profit}</div>
+            </div>
+            <div className="goodsAttributeItem">
+              <div className="attributeLabel">种植地址</div>
+              <div className="attributeContent">{address}</div>
+            </div>
+          </div>
+        </div>
+        <div className="goodsPageDo">
+          <div className={'isLike like'}>★</div>
+          <div
+            className="cartNum"
+            onClick={() => {
+              push(`/cart`)
+            }}
+          >
+            <i className="iconfont icon-Add-Cart"></i>
+          </div>
+          <div className="addCart" onClick={this.addCart.bind(this)}>
+            加入购物车
+          </div>
+          <div className="payGoods">立即购买</div>
+        </div>
+      </div>
+    ) : null
   }
 }
-const mapStateToProps = (state, props) => ({...state.common})
-const mapDispatchToProps = dispatch => ({actions: bindActionCreators(commonAction, dispatch)})
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Goods))
+
+const mapStateToProps = (state, props) => ({ ...state.common })
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(commonAction, dispatch),
+})
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(Goods),
+)
